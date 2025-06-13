@@ -1,74 +1,185 @@
-
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>父亲节暖心相册</title>
+
+  <!-- 第三方样式 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
   <style>
-    *{margin:0;padding:0;box-sizing:border-box;}
-    html,body{width:100%;height:100%;overflow:hidden;font-family:"Microsoft YaHei",sans-serif;}
-    .page{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-start;align-items:center;background-size:cover;background-position:center;background-repeat:no-repeat;opacity:0;pointer-events:none;transition:opacity .8s ease-in-out;padding-top:8vh;}
-    .page.active{opacity:1;pointer-events:auto;}
-    .caption{font-size:clamp(1.3rem,3vw,2rem);text-align:center;line-height:1.6;padding:1rem 2vw;color:#fff;text-shadow:0 0 10px #000;background:rgba(0,0,0,0.4);border-radius:1em;max-width:90%;margin-bottom:2vh;}
-    .bless{font-size:clamp(1.4rem,4vw,2.6rem);text-align:center;line-height:1.6;padding:1rem 5vw;color:#ff4865;text-shadow:0 0 6px #fff;animation:fadeInUp 1.2s ease-in-out;}
-    .nav{position:fixed;bottom:2vh;left:50%;transform:translateX(-50%);display:flex;gap:4vw;z-index:20;}
-    .nav button{width:60px;height:60px;background-color:#ff7993;border:none;border-radius:50%;clip-path:polygon(50% 0%, 61% 10%, 70% 20%, 80% 40%, 90% 60%, 80% 80%, 60% 90%, 50% 100%, 40% 90%, 20% 80%, 10% 60%, 20% 40%, 30% 20%, 39% 10%);cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,.3);transition:transform .2s;}
-    .nav button:hover{transform:scale(1.15);}
-    .nav button::before{content:"";position:absolute;width:100%;height:100%;}
-    .heart{position:fixed;top:-10vh;width:20px;height:20px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 29.6'%3E%3Cpath fill='%23ff4865' d='M23.6,0c-3.4,0-6.4,2.7-7.6,5.1C14.8,2.7,11.8,0,8.4,0C3.8,0,0,3.8,0,8.4 c0,9.3,16,21.2,16,21.2s16-11.9,16-21.2C32,3.8,28.2,0,23.6,0z'/%3E%3C/svg%3E");background-size:contain;background-repeat:no-repeat;opacity:.8;pointer-events:none;animation:fall linear infinite;}
-    @keyframes fall{0%{transform:translateY(0) rotate(0deg) scale(1);opacity:1;}100%{transform:translateY(110vh) rotate(360deg) scale(.7);opacity:0;}}
-    #page1 img,#page2 img,#page3 img{max-width:70vw;width:clamp(220px,55vw,420px);animation:float 3.5s ease-in-out infinite alternate;}
-    @keyframes float{from{transform:translateY(-10px);}to{transform:translateY(10px);}}
+    /* 音乐控制按钮样式 */
+    .music-control{
+      position:fixed;top:20px;right:20px;z-index:1000;
+      background:rgba(255,255,255,.9);border-radius:50%;width:50px;height:50px;
+      display:flex;align-items:center;justify-content:center;
+      box-shadow:0 4px 15px rgba(0,0,0,.1);cursor:pointer;transition:.3s;
+    }
+    .music-control:hover{transform:scale(1.1)}
+    .music-control i{font-size:24px;color:#e74c3c}
+
+    /* 原有样式 */
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{
+      font-family:'Helvetica Neue',Arial,sans-serif;
+      background:linear-gradient(135deg,#f5f7fa 0%,#c3cfe2 100%);
+      color:#333;min-height:100vh;overflow:hidden;position:relative;
+    }
+    .page{
+      width:100vw;height:100vh;display:flex;flex-direction:column;
+      justify-content:center;align-items:center;padding:20px;
+      position:absolute;top:0;left:0;opacity:0;transition:opacity .8s;
+      background:linear-gradient(135deg,#e0c3fc 0%,#8ec5fc 100%);text-align:center;
+    }
+    .page.active{opacity:1;z-index:1}
+    .caption{
+      font-size:1.8rem;font-weight:bold;margin-bottom:2rem;color:#2c3e50;
+      text-shadow:1px 1px 3px rgba(255,255,255,.7);max-width:80%;line-height:1.6;
+    }
+    .bless{
+      font-size:2.2rem;color:#e74c3c;padding:20px;background:rgba(255,255,255,.8);
+      border-radius:15px;box-shadow:0 8px 25px rgba(0,0,0,.15)
+    }
+    img{
+      max-width:85%;max-height:60vh;border-radius:15px;
+      box-shadow:0 10px 30px rgba(0,0,0,.2);border:5px solid #fff;
+    }
+    .nav{
+      position:fixed;bottom:30px;width:100%;display:flex;
+      justify-content:center;z-index:100;
+    }
+    .heart-button{
+      background:#e74c3c;color:#fff;border:none;width:60px;height:60px;
+      border-radius:50%;font-size:1.8rem;cursor:pointer;margin:0 15px;
+      display:flex;align-items:center;justify-content:center;
+      box-shadow:0 4px 15px rgba(231,76,60,.4);transition:.3s;
+    }
+    .heart-button:hover{transform:scale(1.1);background:#c0392b}
+
+    /* ========= 新增：飘落爱心 ========= */
+    .heart-float{
+      position:fixed;top:-2rem;pointer-events:none;z-index:50;
+      color:#e74c3c;font-size:1.6rem;opacity:.92;
+      animation:heartFall var(--fall-duration,6s) linear forwards;
+      transform-origin:center;
+    }
+    @keyframes heartFall{
+      0%{transform:translateY(0) scale(var(--scale,1)) rotate(0deg)}
+      100%{transform:translateY(calc(100vh + 4rem)) scale(var(--scale,1)) rotate(720deg);opacity:0}
+    }
   </style>
 </head>
+
 <body>
-  <section id="page1" class="page active">
+  <!-- 7 Pages -->
+  <section id="page1" class="page">
     <div class="caption">
-      小小的我，大大的父亲<br/>
-      咿呀学语<br/>
-      蹒跚学步<br/>
-      小小的我够到了父亲的肚子
+      小小的我，大大的父亲<br/>咿呀学语<br/>蹒跚学步<br/>小小的我够到了父亲的肚子
     </div>
-    <img src="images/father_little.gif" alt="父亲抱着小女孩" class="animate__animated animate__zoomIn"/>
+    <img src="images/father_little.gif" alt="父亲抱小女孩" class="animate__animated animate__zoomIn"/>
   </section>
 
-  <section id="page2" class="page" style="background-image:url('images/father_school.webp');">
+  <section id="page2" class="page">
     <div class="caption">
-      中等的我，发福的父亲<br/>
-      车接车送<br/>
-      早餐晚餐<br/>
-      中等的我够到了父亲的鼻子
+      中等的我，发福的父亲<br/>车接车送<br/>早餐晚餐<br/>中等的我够到了父亲的鼻子
     </div>
-    <img src="images/father_school.webp" alt="上学的女儿与父亲" class="animate__animated animate__fadeInRight"/>
+    <img src="images/father_school.webp" alt="父亲看着女儿上学" class="animate__animated animate__fadeInRight"/>
   </section>
 
-  <section id="page3" class="page" style="background-image:url('images/family_photo.jpg');">
+  <section id="page3" class="page" style="background-image:linear-gradient(135deg,#c2e9fb 0%,#a1c4fd 100%);">
     <div class="caption">
-      长大的我，团聚的父母<br/>
-      寒来暑往<br/>
-      秋收冬藏
+      爸爸是个超人<br/>他一直在身边<br/>他能解决一切
+    </div>
+    <img src="images/father_superman.gif" alt="父亲是个超人" class="animate__animated animate__fadeInRight"/>
+  </section>
+
+  <section id="page4" class="page" style="background-image:linear-gradient(135deg,#fbc2eb 0%,#a6c1ee 100%);">
+    <div class="caption">
+      爸爸也曾经是一个小男孩<br/>他也依赖爸爸妈妈<br/>现在他的爸爸妈妈也依赖他
+    </div>
+    <img src="images/father_boy.webp" alt="爸爸也曾经是一个小男孩" class="animate__animated animate__fadeInRight"/>
+  </section>
+
+  <section id="page5" class="page" style="background-image:linear-gradient(135deg,#fdcbf1 0%,#e6dee9 100%);">
+    <div class="caption">
+      爸爸遇到妈妈<br/>妈妈也是爸爸的超人<br/>我算预备超人
+    </div>
+    <img src="images/father_mother.gif" alt="爸爸遇到妈妈" class="animate__animated animate__fadeInRight"/>
+  </section>
+
+  <section id="page6" class="page">
+    <div class="caption">
+      长大的我，团聚的父母<br/>寒来暑往<br/>秋收冬藏
     </div>
     <img src="images/family_photo.jpg" alt="全家福" class="animate__animated animate__fadeIn"/>
   </section>
 
-  <section id="page4" class="page" style="background-image:linear-gradient(135deg,#ffe2e8 0%,#fff 100%);">
-    <p class="bless">亲爱的父亲大人，您辛苦了！<br/>父亲节快乐，希望您长命百岁，顺心顺意！</p>
+  <section id="page7" class="page" style="background:linear-gradient(135deg,#ffe2e8 0%,#fff 100%);">
+    <div class="caption bless">
+      亲爱的父亲大人，您辛苦了！<br/>父亲节快乐，希望您长命百岁，顺心顺意！
+    </div>
   </section>
 
+  <!-- 导航按钮 -->
   <div class="nav">
-    <button id="prev" title="上一页"></button>
-    <button id="next" title="下一页"></button>
+    <button id="prev" class="heart-button">❮</button>
+    <button id="next" class="heart-button">❯</button>
   </div>
 
+  <!-- 音乐控制按钮 -->
+  <div class="music-control" id="musicControl">
+    <i class="fas fa-music"></i>
+  </div>
+
+  <!-- 背景音乐 -->
+  <audio id="backgroundMusic" loop>
+    <source src="father.ogg" type="audio/ogg">
+    您的浏览器不支持音频元素。
+  </audio>
+
   <script>
-    const pages=[...document.querySelectorAll('.page')];let index=0;
-    const update=()=>pages.forEach((p,i)=>p.classList.toggle('active',i===index));
-    document.getElementById('next').addEventListener('click',()=>{index=(index+1)%pages.length;update();});
-    document.getElementById('prev').addEventListener('click',()=>{index=(index-1+pages.length)%pages.length;update();});
-    const createHeart=()=>{const h=document.createElement('span');h.className='heart';h.style.left=Math.random()*100+'vw';h.style.animationDuration=4+Math.random()*4+'s';h.style.animationDelay=Math.random()*4+'s';h.style.transform=`scale(${0.6+Math.random()*0.8})`;document.body.appendChild(h);setTimeout(()=>h.remove(),9000);};
-    setInterval(createHeart,400);
+    document.addEventListener('DOMContentLoaded',function(){
+      /* ===== 音乐控制 ===== */
+      const audio=document.getElementById('backgroundMusic');
+      const musicBtn=document.getElementById('musicControl');
+      let isPlaying=false;
+      musicBtn.addEventListener('click',()=>{
+        if(isPlaying){
+          audio.pause();musicBtn.innerHTML='<i class="fas fa-music"></i>'
+        }else{
+          audio.play().then(()=>{musicBtn.innerHTML='<i class="fas fa-pause"></i>';isPlaying=true})
+                      .catch(err=>{alert('音乐播放失败，请交互后重试');console.error(err)});
+        }
+        isPlaying=!isPlaying;
+      });
+
+      /* ===== 分页 ===== */
+      const pages=document.querySelectorAll('.page');
+      const prev=document.getElementById('prev'),next=document.getElementById('next');
+      let idx=0;
+      const show=n=>{pages.forEach(p=>p.classList.remove('active'));pages[n].classList.add('active');idx=n};
+      const nextPage=()=>show((idx+1)%pages.length);
+      const prevPage=()=>show((idx-1+pages.length)%pages.length);
+      next.addEventListener('click',nextPage);prev.addEventListener('click',prevPage);
+      document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')nextPage();if(e.key==='ArrowLeft')prevPage();});
+      show(0);
+
+      /* ===== 飘落爱心 ===== */
+      function createHeart(){
+        const h=document.createElement('i');
+        h.className='fas fa-heart heart-float';
+        h.style.left=Math.random()*100+'vw';
+        const scale=(Math.random()*1.4+0.6).toFixed(2);
+        const dur=(Math.random()*3+4).toFixed(2)+'s';
+        h.style.setProperty('--scale',scale);
+        h.style.setProperty('--fall-duration',dur);
+        document.body.appendChild(h);
+        h.addEventListener('animationend',()=>h.remove());
+      }
+      setInterval(createHeart,300);
+    });
   </script>
 </body>
 </html>

@@ -1,0 +1,14 @@
+
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:100%;height:100%;overflow:hidden;font-family:"Microsoft YaHei",sans-serif;}
+.page{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-start;align-items:center;background-size:cover;background-position:center;background-repeat:no-repeat;opacity:0;pointer-events:none;transition:opacity .8s ease-in-out;padding-top:8vh;}
+.page.active{opacity:1;pointer-events:auto;}
+.caption{font-size:clamp(1.3rem,3vw,2rem);text-align:center;line-height:1.6;padding:1rem 2vw;color:#fff;text-shadow:0 0 10px #000;background:rgba(0,0,0,.4);border-radius:1em;max-width:90%;margin-bottom:2vh;}
+.bless{font-size:clamp(1.4rem,4vw,2.6rem);text-align:center;line-height:1.6;padding:1rem 5vw;color:#ff4865;text-shadow:0 0 6px #fff;}
+.nav{position:fixed;bottom:2vh;left:50%;transform:translateX(-50%);display:flex;gap:4vw;z-index:20;}
+.heart-button{position:relative;width:60px;height:60px;background-color:#ff7993;border:none;border-radius:50%;clip-path:polygon(50% 0%, 61% 10%, 70% 20%, 80% 40%, 90% 60%, 80% 80%, 60% 90%, 50% 100%, 40% 90%, 20% 80%, 10% 60%, 20% 40%, 30% 20%, 39% 10%);cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,.3);transition:transform .2s;color:#fff;font-size:1.8rem;line-height:60px;text-align:center;}
+.heart-button:hover{transform:scale(1.15);}
+.heart{position:fixed;top:-10vh;width:20px;height:20px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 29.6'%3E%3Cpath fill='%23ff4865' d='M23.6,0c-3.4,0-6.4,2.7-7.6,5.1C14.8,2.7,11.8,0,8.4,0C3.8,0,0,3.8,0,8.4 c0,9.3,16,21.2,16,21.2s16-11.9,16-21.2C32,3.8,28.2,0,23.6,0z'/%3E%3C/svg%3E");background-size:contain;background-repeat:no-repeat;opacity:.8;pointer-events:none;animation:fall linear infinite;}
+@keyframes fall{0%{transform:translateY(0) rotate(0deg) scale(1);opacity:1;}100%{transform:translateY(110vh) rotate(360deg) scale(.7);opacity:0;}}
+#page1 img,#page2 img,#page6 img{max-width:70vw;width:clamp(220px,55vw,420px);animation:float 3.5s ease-in-out infinite alternate;}
+@keyframes float{from{transform:translateY(-10px);}to{transform:translateY(10px);}}
